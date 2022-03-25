@@ -1,7 +1,8 @@
 #!/bin/bash
 
 VIDEO_DIRECTORY=~/Documents/Experience_videos/
-FILE_NAME=test.avi
+DATE=`date +%m-%d-%Y_%I:%M:%S`
+FILE_NAME=test$DATE.avi
 
 ## libcamera-vid
 
@@ -30,6 +31,6 @@ FILE_NAME=test.avi
 #libva info: va_openDriver() returns -1
 #[00007f7eec002bd0] glconv_vaapi_x11 gl error: vaInitialize: unknown libva error
 
-rm test.avi
-ffmpeg -loglevel verbose -fflags nobuffer -flags low_delay -i tcp://192.168.111.151:1234 -b:v 10M -an -sn -r 30 -vcodec copy $VIDEO_DIRECTORY$FILE_NAME # Work, Quality : good, Latency : <1s
-#ffplay tcp://192.168.111.151:1234 -fs -fast -loglevel verbose -vf "setpts=N/40" -fflags nobuffer -flags low_delay -framedrop # Work, Quality : good, Latency : <1s
+#rm test.avi
+#ffmpeg -loglevel verbose -fflags nobuffer -flags low_delay -i tcp://192.168.111.151:1234 -b:v 10M -an -sn -r 30 -vcodec copy $VIDEO_DIRECTORY$FILE_NAME # Work, Quality : good, Latency : <1s
+ffplay tcp://192.168.111.151:1234 -fast -loglevel verbose -vf "setpts=N/40" -fflags nobuffer -flags low_delay -framedrop # Work, Quality : good, Latency : <1s #-fs

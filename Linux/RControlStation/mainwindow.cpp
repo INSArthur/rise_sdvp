@@ -347,6 +347,10 @@ void MainWindow::connectJoystick(QString dev)
             showStatusInfo("Micronav One joystick connected!", true);
             mJoystick->setRepeats(10, true);
             mJoystick->setRepeats(14, true);
+        } else if (mJoystick->getName().contains("G27 Racing Wheel", Qt::CaseInsensitive)) {
+            mJsType = JS_TYPE_G27;
+            qDebug() << "Treating joystick as G27 Racing Wheel.";
+            showStatusInfo("G27 Racing Wheel joystick connected!", true);
         } else {
             mJsType = JS_TYPE_HK;
             qDebug() << "Treating joystick as hobbyking simulator.";
@@ -461,6 +465,19 @@ void MainWindow::timerSlot()
             js_mr_roll = (double)mJoystick->getAxis(3) / 32768.0;
             js_mr_pitch = (double)mJoystick->getAxis(4) / 32768.0;
             js_mr_yaw = (double)mJoystick->getAxis(0) / 32768.0;
+            utility::truncate_number(&js_mr_thr, 0.0, 1.0);
+            utility::truncate_number_abs(&js_mr_roll, 1.0);
+            utility::truncate_number_abs(&js_mr_pitch, 1.0);
+            utility::truncate_number_abs(&js_mr_yaw, 1.0);
+        } else if (mJsType == JS_TYPE_G27) {
+            mThrottle = -(double)mJoystick->getAxis(2) / 32768.0;
+            deadband(mThrottle,0.1, 1.0);
+            mSteering = (double)mJoystick->getAxis(0) / 32768.0;
+
+            js_mr_thr = -(double)mJoystick->getAxis(2) / 32768.0;
+            js_mr_roll = (double)mJoystick->getAxis(0) / 32768.0;
+            js_mr_pitch = (double)mJoystick->getAxis(1) / 32768.0;
+            js_mr_yaw = (double)mJoystick->getAxis(3) / 32768.0;
             utility::truncate_number(&js_mr_thr, 0.0, 1.0);
             utility::truncate_number_abs(&js_mr_roll, 1.0);
             utility::truncate_number_abs(&js_mr_pitch, 1.0);
